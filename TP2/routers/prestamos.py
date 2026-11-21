@@ -9,7 +9,6 @@ from services import prestamo_service
 
 router = APIRouter(prefix="/prestamos", tags=["Préstamos"])
 
-
 @router.post("", response_model=PrestamoRead, status_code=status.HTTP_201_CREATED)
 def crear_prestamo(
     data: PrestamoCreate,

@@ -10,7 +10,6 @@ from services import prestamo_service, socio_service
 
 router = APIRouter(prefix="/socios", tags=["Socios"])
 
-
 @router.post("", response_model=SocioRead, status_code=status.HTTP_201_CREATED)
 def crear_socio(
     data: SocioCreate,

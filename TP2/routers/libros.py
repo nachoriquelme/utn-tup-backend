@@ -9,7 +9,6 @@ from services import libro_service
 
 router = APIRouter(prefix="/libros", tags=["Libros"])
 
-
 @router.post("", response_model=LibroReadWithAutores, status_code=status.HTTP_201_CREATED)
 def crear_libro(
     data: LibroCreate,

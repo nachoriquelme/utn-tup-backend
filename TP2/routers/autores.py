@@ -9,7 +9,6 @@ from services import autor_service
 
 router = APIRouter(prefix="/autores", tags=["Autores"])
 
-
 @router.post("", response_model=AutorRead, status_code=status.HTTP_201_CREATED)
 def crear_autor(
     data: AutorCreate,
