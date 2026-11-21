@@ -2,6 +2,7 @@ from datetime import date, timedelta
 from typing import TYPE_CHECKING, Optional
 from sqlmodel import Field, Relationship, SQLModel
 
+
 if TYPE_CHECKING:
     from models.libro import Libro
     from models.socio import Socio

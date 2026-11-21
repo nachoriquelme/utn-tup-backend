@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, List, Optional
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
+
 if TYPE_CHECKING:
     from models.prestamo import Prestamo
 
