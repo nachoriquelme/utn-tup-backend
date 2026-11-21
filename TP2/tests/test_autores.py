@@ -2,6 +2,7 @@ def test_crud_autores_y_404(client):
     res = client.post(
         "/autores", json={"nombre": "Jorge Luis Borges", "nacionalidad": "Argentina"}
     )
+
     assert res.status_code == 201
     autor = res.json()
     assert autor["nombre"] == "Jorge Luis Borges"

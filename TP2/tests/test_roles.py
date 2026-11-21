@@ -2,7 +2,6 @@ def test_sin_header_rol_retorna_401(client):
     res = client.get("/libros", headers={"X-Role": ""})
     assert res.status_code == 401
 
-
 def test_socio_no_puede_administrar_catalogo(client):
     headers_socio = {"X-Role": "socio", "X-Socio-Id": "1"}
 
@@ -27,7 +26,6 @@ def test_socio_no_puede_administrar_catalogo(client):
         ).status_code
         == 403
     )
-
 
 def test_socio_ve_unicamente_sus_prestamos(client):
     s1 = client.post(

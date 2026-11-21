@@ -16,6 +16,7 @@ def test_crud_libros_relacion_autores_y_disponibles(client):
     )
     assert l2.status_code == 201
 
+
     # Regla 8: ISBN duplicado -> 409
     dup = client.post(
         "/libros",

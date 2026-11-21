@@ -9,6 +9,7 @@ def test_crud_socios_email_duplicado_y_404(client):
     assert len(client.get("/socios").json()) == 1
     assert client.get(f"/socios/{socio['id']}").status_code == 200
 
+
     # Regla 8: Email duplicado -> 409
     dup = client.post(
         "/socios",

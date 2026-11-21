@@ -1,6 +1,5 @@
 from datetime import date, timedelta
 
-
 def test_regla_1_maximo_3_prestamos_activos(client):
     socio = client.post(
         "/socios", json={"nombre": "Carlos", "email": "carlos@ejemplo.com", "activo": True}

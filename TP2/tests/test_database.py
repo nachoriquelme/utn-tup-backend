@@ -1,6 +1,7 @@
 from sqlmodel import Session, SQLModel, create_engine, select
 from sqlmodel.pool import StaticPool
 
+
 import database
 from database import create_db_and_tables, get_session
 from models.autor import Autor
