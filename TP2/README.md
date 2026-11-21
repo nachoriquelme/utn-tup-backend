@@ -54,7 +54,7 @@ cd tu-repositorio
 
 ## Crear el entorno virtual (venv)
 
-Desde esta carpeta (`TP1`):
+Desde esta carpeta (`TP2`):
 
 ```bash
 python3 -m venv .venv
