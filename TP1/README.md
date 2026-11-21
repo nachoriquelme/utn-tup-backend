@@ -37,7 +37,6 @@ Desde esta carpeta (`TP1`):
 ```bash
 python3 -m venv .venv
 ```
-
 Activar el entorno virtual:
 
 ```bash
