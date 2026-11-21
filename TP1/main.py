@@ -8,7 +8,6 @@ app = FastAPI()
 app.include_router(users.router)
 app.include_router(productos.router)
 
-
 # Define a GET route for the root URL
 @app.get("/")
 def read_root():

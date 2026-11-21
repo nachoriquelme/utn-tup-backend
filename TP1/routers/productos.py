@@ -15,6 +15,7 @@ productosLista: list[Producto] = [
     Producto(id=2, nombre="Mouse", precio=15000, stock=50, categoria="Accesorios"),
 ]
 
+
 @router.get("/producto")
 def get_productos(categoria: Optional[str] = Query(None, description="Filtrar por categoría")) -> GetProductosResponse:
     if categoria is not None:

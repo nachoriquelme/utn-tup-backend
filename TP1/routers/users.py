@@ -10,6 +10,7 @@ from models.users import (
 
 router = APIRouter()
 
+
 usuarios: list[User] = [
     User(id=1, name="juan perez", is_active = True),
     User(id=2, name="pepe sanchez", is_active = False),
