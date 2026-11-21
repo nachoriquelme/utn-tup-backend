@@ -6,7 +6,6 @@ from database import create_db_and_tables
 import models  
 from routers import autores, libros, prestamos, socios
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
