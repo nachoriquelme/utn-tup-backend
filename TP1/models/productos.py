@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import List
 
-
 class Producto(BaseModel):
     id: int
     nombre: str
