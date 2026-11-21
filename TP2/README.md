@@ -87,6 +87,21 @@ fastapi dev main.py
 
 La API quedará disponible en `http://127.0.0.1:8000` y la documentación interactiva (Swagger UI) en `http://127.0.0.1:8000/docs`.
 
+Si tenes problemas con la version de Python al levantar la aplicacion, ejecutá:
+```bash
+python -m pip install --upgrade pip
+python -m pip install --upgrade sqlmodel pydantic email-validator fastapi uvicorn[standard] pytest pytest-cov httpx
+python -m pip show sqlmodel pydantic
+```
+
+## Cómo Correr los Tests y Ver la Cobertura
+
+La suite de pruebas utiliza SQLite en memoria (`sqlite://`) y cubre CRUDs, relaciones, reglas de negocio, base de datos y control de roles:
+
+```
+pytest
+pytest --cov=. --cov-report=term-missing
+```
 
 ## Roles y Autenticación por Headers
 
@@ -132,11 +147,3 @@ X-Socio-Id: 1
 7. **Recursos inexistentes:** Cualquier operación sobre un ID inexistente devuelve `404 Not Found`.
 8. **Unicidad e integridad:** No se permiten ISBN ni emails duplicados, ni eliminar libros con préstamos asociados (`409 Conflict`).
 
-## Cómo Correr los Tests y Ver la Cobertura
-
-La suite de pruebas utiliza SQLite en memoria (`sqlite://`) y cubre CRUDs, relaciones, reglas de negocio, base de datos y control de roles (objetivo de cobertura $\ge 80\%$):
-
-```
-pytest
-pytest --cov=. --cov-report=term-missing
-```
