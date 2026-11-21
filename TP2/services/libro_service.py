@@ -6,7 +6,6 @@ from models.libro import Libro, LibroCreate, LibroUpdate
 from models.prestamo import Prestamo
 from services.autor_service import obtener_autor
 
-
 def crear_libro(session: Session, data: LibroCreate) -> Libro:
     existente = session.exec(select(Libro).where(Libro.isbn == data.isbn)).first()
     if existente:

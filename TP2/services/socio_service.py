@@ -5,7 +5,6 @@ from sqlmodel import Session, select
 from models.prestamo import Prestamo
 from models.socio import Socio, SocioCreate, SocioUpdate
 
-
 def crear_socio(session: Session, data: SocioCreate) -> Socio:
     existente = session.exec(select(Socio).where(Socio.email == data.email)).first()
     if existente:

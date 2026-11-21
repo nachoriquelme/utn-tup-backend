@@ -12,7 +12,6 @@ MAX_PRESTAMOS_ACTIVOS = 3
 PLAZO_DIAS = 14
 MULTA_POR_DIA = 100.0
 
-
 def registrar_prestamo(session: Session, data: PrestamoCreate) -> Prestamo:
     socio = obtener_socio(session, data.socio_id)
     libro = obtener_libro(session, data.libro_id)

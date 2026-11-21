@@ -4,7 +4,6 @@ from sqlmodel import Session, select
 
 from models.autor import Autor, AutorCreate, AutorUpdate
 
-
 def crear_autor(session: Session, data: AutorCreate) -> Autor:
     autor = Autor.model_validate(data)
     session.add(autor)
