@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Session, create_engine
 
 DATABASE_URL = "sqlite:///./biblioteca.db"
 
+
 engine = create_engine(
     DATABASE_URL,
     echo=False,
