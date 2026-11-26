@@ -3,7 +3,6 @@ from sqlmodel import Session, select
 
 from models.socio import Socio
 
-
 class SocioRepository:
     def __init__(self, session: Session) -> None:
         self.session = session

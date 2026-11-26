@@ -3,7 +3,6 @@ from sqlmodel import Session, select
 
 from models.autor import Autor
 
-
 class AutorRepository:
     def __init__(self, session: Session) -> None:
         self.session = session

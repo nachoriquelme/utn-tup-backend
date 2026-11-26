@@ -5,7 +5,6 @@ from models.autor import Autor
 from models.libro import Libro
 from models.prestamo import Prestamo
 
-
 class LibroRepository:
     def __init__(self, session: Session) -> None:
         self.session = session

@@ -4,7 +4,6 @@ from sqlmodel import Session, select
 from models.libro import Libro
 from models.prestamo import Prestamo
 
-
 class PrestamoRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
