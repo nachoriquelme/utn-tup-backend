@@ -1,34 +1,32 @@
 from typing import List, Optional
 from fastapi import HTTPException, status
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from models.libro import Libro, LibroCreate, LibroUpdate
-from models.prestamo import Prestamo
+from repositories.libro_repository import LibroRepository
 from services.autor_service import obtener_autor
 
+
 def crear_libro(session: Session, data: LibroCreate) -> Libro:
-    existente = session.exec(select(Libro).where(Libro.isbn == data.isbn)).first()
+    repo = LibroRepository(session)
+    existente = repo.get_by_isbn(data.isbn)
     if existente:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Ya existe un libro registrado con el ISBN '{data.isbn}'",
         )
     libro = Libro.model_validate(data)
-    session.add(libro)
-    session.commit()
-    session.refresh(libro)
-    return libro
+    return repo.create(libro)
 
 
 def listar_libros(session: Session, disponibles: Optional[bool] = None) -> List[Libro]:
-    query = select(Libro)
-    if disponibles is True:
-        query = query.where(Libro.stock > 0)
-    return list(session.exec(query).all())
+    repo = LibroRepository(session)
+    return repo.get_all(disponibles=disponibles)
 
 
 def obtener_libro(session: Session, libro_id: int) -> Libro:
-    libro = session.get(Libro, libro_id)
+    repo = LibroRepository(session)
+    libro = repo.get_by_id(libro_id)
     if not libro:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -38,13 +36,12 @@ def obtener_libro(session: Session, libro_id: int) -> Libro:
 
 
 def actualizar_libro(session: Session, libro_id: int, data: LibroUpdate) -> Libro:
+    repo = LibroRepository(session)
     libro = obtener_libro(session, libro_id)
     update_data = data.model_dump(exclude_unset=True)
 
     if "isbn" in update_data and update_data["isbn"] != libro.isbn:
-        duplicado = session.exec(
-            select(Libro).where(Libro.isbn == update_data["isbn"])
-        ).first()
+        duplicado = repo.get_by_isbn(update_data["isbn"])
         if duplicado:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
@@ -54,34 +51,22 @@ def actualizar_libro(session: Session, libro_id: int, data: LibroUpdate) -> Libr
     for key, value in update_data.items():
         setattr(libro, key, value)
 
-    session.add(libro)
-    session.commit()
-    session.refresh(libro)
-    return libro
+    return repo.update(libro)
 
 
 def eliminar_libro(session: Session, libro_id: int) -> None:
+    repo = LibroRepository(session)
     libro = obtener_libro(session, libro_id)
-    prestamo_asociado = session.exec(
-        select(Prestamo).where(Prestamo.libro_id == libro_id)
-    ).first()
-    if prestamo_asociado:
+    if repo.has_prestamos(libro_id):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="No se puede eliminar un libro que tiene préstamos asociados",
         )
-    session.delete(libro)
-    session.commit()
+    repo.delete(libro)
 
 
 def asociar_autor_a_libro(session: Session, libro_id: int, autor_id: int) -> Libro:
+    repo = LibroRepository(session)
     libro = obtener_libro(session, libro_id)
     autor = obtener_autor(session, autor_id)
-
-    if autor not in libro.autores:
-        libro.autores.append(autor)
-        session.add(libro)
-        session.commit()
-        session.refresh(libro)
-
-    return libro
+    return repo.add_autor(libro, autor)

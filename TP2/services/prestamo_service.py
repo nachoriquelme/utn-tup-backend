@@ -1,10 +1,11 @@
 from datetime import date, timedelta
 from typing import List, Optional
 from fastapi import HTTPException, status
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from auth import Rol, UsuarioActual
 from models.prestamo import Prestamo, PrestamoCreate
+from repositories.prestamo_repository import PrestamoRepository
 from services.libro_service import obtener_libro
 from services.socio_service import obtener_socio
 
@@ -12,7 +13,9 @@ MAX_PRESTAMOS_ACTIVOS = 3
 PLAZO_DIAS = 14
 MULTA_POR_DIA = 100.0
 
+
 def registrar_prestamo(session: Session, data: PrestamoCreate) -> Prestamo:
+    repo = PrestamoRepository(session)
     socio = obtener_socio(session, data.socio_id)
     libro = obtener_libro(session, data.libro_id)
 
@@ -22,13 +25,8 @@ def registrar_prestamo(session: Session, data: PrestamoCreate) -> Prestamo:
             detail="El socio se encuentra inactivo y no puede solicitar préstamos",
         )
 
-    prestamos_activos = session.exec(
-        select(Prestamo).where(
-            Prestamo.socio_id == socio.id,
-            Prestamo.fecha_devolucion == None,  # noqa: E711
-        )
-    ).all()
-    if len(prestamos_activos) >= MAX_PRESTAMOS_ACTIVOS:
+    cantidad_activos = repo.count_activos_by_socio(socio.id)
+    if cantidad_activos >= MAX_PRESTAMOS_ACTIVOS:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"El socio ya alcanzó el límite máximo de {MAX_PRESTAMOS_ACTIVOS} préstamos activos",
@@ -53,11 +51,7 @@ def registrar_prestamo(session: Session, data: PrestamoCreate) -> Prestamo:
         multa=0.0,
     )
 
-    session.add(libro)
-    session.add(prestamo)
-    session.commit()
-    session.refresh(prestamo)
-    return prestamo
+    return repo.create_with_stock_update(prestamo, libro)
 
 
 def registrar_devolucion(
@@ -65,7 +59,8 @@ def registrar_devolucion(
     prestamo_id: int,
     fecha_devolucion: Optional[date] = None,
 ) -> Prestamo:
-    prestamo = session.get(Prestamo, prestamo_id)
+    repo = PrestamoRepository(session)
+    prestamo = repo.get_by_id(prestamo_id)
     if not prestamo:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -86,11 +81,7 @@ def registrar_devolucion(
     libro = obtener_libro(session, prestamo.libro_id)
     libro.stock += 1
 
-    session.add(libro)
-    session.add(prestamo)
-    session.commit()
-    session.refresh(prestamo)
-    return prestamo
+    return repo.update_with_stock_update(prestamo, libro)
 
 
 def listar_prestamos_socio(
@@ -99,14 +90,8 @@ def listar_prestamos_socio(
     activos: Optional[bool] = None,
 ) -> List[Prestamo]:
     obtener_socio(session, socio_id)
-
-    query = select(Prestamo).where(Prestamo.socio_id == socio_id)
-    if activos is True:
-        query = query.where(Prestamo.fecha_devolucion == None)  # noqa: E711
-    elif activos is False:
-        query = query.where(Prestamo.fecha_devolucion != None)  # noqa: E711
-
-    return list(session.exec(query).all())
+    repo = PrestamoRepository(session)
+    return repo.get_by_socio(socio_id, activos=activos)
 
 
 def listar_prestamos_socio_autorizado(
