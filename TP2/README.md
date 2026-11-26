@@ -18,6 +18,12 @@ biblioteca-api/
 │   ├── libro_autor.py
 │   ├── prestamo.py
 │   └── socio.py
+├── services/
+│   ├── __init__.py
+│   ├── autor_repository.py
+│   ├── libro_repository.py
+│   ├── prestamo_repository.py
+│   └── socio_repository.py
 ├── routers/
 │   ├── __init__.py
 │   ├── autores.py
@@ -37,6 +43,7 @@ biblioteca-api/
     ├── test_database.py
     ├── test_libros.py
     ├── test_prestamos.py
+    ├── test_repositories.py
     ├── test_roles.py
     └── test_socios.py
 ```
