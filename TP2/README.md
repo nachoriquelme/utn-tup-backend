@@ -18,7 +18,7 @@ biblioteca-api/
 │   ├── libro_autor.py
 │   ├── prestamo.py
 │   └── socio.py
-├── services/
+├── repositories/
 │   ├── __init__.py
 │   ├── autor_repository.py
 │   ├── libro_repository.py
